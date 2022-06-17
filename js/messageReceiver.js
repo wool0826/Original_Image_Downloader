@@ -1,13 +1,19 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.type == 'insta') {
-        const imagePanel = document.getElementsByClassName("FFVAD");
-        const hasNextImage = (document.getElementsByClassName("    coreSpriteRightChevron")[0] == undefined);
-        
-        sendResponse(
-            hasNextImage
-            ? imagePanel[imagePanel.length - 1].src
-            : imagePanel[imagePanel.length - 2].src
-        );
+        const nextArrowExistYn = document.getElementsByClassName(" _9zm2").length != 0
+        const prevArrowExistYn = document.getElementsByClassName(" _9zm0").length != 0
+
+        const mutipleImagePanelYn = (nextArrowExistYn || prevArrowExistYn)
+
+        if (mutipleImagePanelYn) {
+            if (!prevArrowExistYn) { // firstPage
+                sendResponse(document.getElementsByClassName("_acay")[1].getElementsByClassName("_acaz")[0].getElementsByClassName("_aagt")[0].src)
+            } else {
+                sendResponse(document.getElementsByClassName("_acay")[1].getElementsByClassName("_acaz")[1].getElementsByClassName("_aagt")[0].src)
+            }
+        } else {
+            sendResponse(document.getElementsByClassName("_aagu _aato")[0].getElementsByClassName("_aagt")[0].src)
+        }
     } else if (request.type == 'tistory') {
         const script = document.getElementsByTagName("script");
 
