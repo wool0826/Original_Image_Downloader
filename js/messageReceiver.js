@@ -6,13 +6,31 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         const mutipleImagePanelYn = (nextArrowExistYn || prevArrowExistYn)
 
         if (mutipleImagePanelYn) {
-            if (!prevArrowExistYn) { // firstPage
-                sendResponse(document.getElementsByClassName("_acay")[1].getElementsByClassName("_acaz")[0].getElementsByClassName("_aagt")[0].src)
+            const imagePanel = document.getElementsByClassName("_acay")[1].childNodes;
+
+            if (imagePanel.length == 4) { // other panel, prev img, current img, next img
+                sendResponse(imagePanel[2].getElementsByTagName("img")[0].src);
             } else {
-                sendResponse(document.getElementsByClassName("_acay")[1].getElementsByClassName("_acaz")[1].getElementsByClassName("_aagt")[0].src)
+                if (nextArrowExistYn) { // other panel, current img, next img
+                    sendResponse(imagePanel[1].getElementsByTagName("img")[0].src);
+                } else { // other panel, prev img, current img
+                    sendResponse(imagePanel[2].getElementsByTagName("img")[0].src);
+                }
             }
-        } else {
-            sendResponse(document.getElementsByClassName("_aagu _aato")[0].getElementsByClassName("_aagt")[0].src)
+        } else { // single image
+            const svgElements = document.getElementsByTagName("svg");
+            var taggedImageYn = false;
+    
+            for (var i=0; i<svgElements.length; i++) {
+                taggedImageYn = taggedImageYn || svgElements[i].ariaLabel.includes("Tags")
+            } 
+            console.log("taggedImageYn" + taggedImageYn);
+
+            if (taggedImageYn) {
+                sendResponse(document.getElementsByClassName("_aagu _aa20")[0].getElementsByClassName("_aagv")[0].getElementsByTagName("img")[0].src)
+            } else {
+                sendResponse(document.getElementsByClassName("_aagu _aato")[0].getElementsByClassName("_aagv")[0].getElementsByTagName("img")[0].src)
+            }
         }
     } else if (request.type == 'tistory') {
         const script = document.getElementsByTagName("script");
